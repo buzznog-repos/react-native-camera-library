@@ -50,4 +50,4 @@ import RNCameraLibrary from 'react-native-camera-library';
 // TODO: What to do with the module?
 RNCameraLibrary;
 ```
-  
+  # react-native-camera-library
