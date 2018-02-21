@@ -1,10 +1,8 @@
-
 #import "RNCameraLibrary.h"
 #import <Photos/PHAsset.h>
 #import <Photos/PHFetchResult.h>
 #import <Photos/PHImageManager.h>
 #import <Photos/PHFetchOptions.h>
-#import <Photos/PHCollection.h>
 
 #import <Foundation/Foundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -25,10 +23,8 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)props callback:(RCTResponseSenderBlo
         if (status == PHAuthorizationStatusAuthorized) {
                 PHFetchOptions *options = [[PHFetchOptions alloc] init];
                 options.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
-
-
-
-                //PHFetchResult *allPhotosResult = [PHAsset fetchAssetsWithOptions:options];
+                
+                PHFetchResult *allPhotosResult = [PHAsset fetchAssetsWithOptions:options];
                 NSMutableArray *collection = [NSMutableArray array];
                 
                 PHImageRequestOptions *requestOptionForPhotos = [[PHImageRequestOptions alloc] init];
@@ -37,7 +33,7 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)props callback:(RCTResponseSenderBlo
                 
                 BOOL nextPage = YES;
                 
-
+                int countObjects = (int)[allPhotosResult count];
                 
                 int perPage = 20;
                 if ([props objectForKey:@"perPage"] != nil) {
@@ -55,27 +51,15 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)props callback:(RCTResponseSenderBlo
                 }
                 
                 int page = [[props valueForKey:@"page"] intValue];
-
+                int lastPage = ceil(countObjects/perPage);
+                
                 //    int from = (page-1)*perPage;
                 //    int to = (page*perPage)-1;
                 //    if(to > countObjects) {
                 //        to = countObjects;
                 //        nextPage = NO;
                 //    }
-                NSMutableArray *allPhotosResult = [NSMutableArray new];
-                PHFetchResult *fr = [PHAssetCollection fetchMomentsWithOptions:nil];
-                for (PHAssetCollection *collection in fr) {
-
-                   PHFetchResult *_fr = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
-                   for (PHAsset *asset in _fr) {
-
-                     [allPhotosResult addObject:asset];
-                   }
-
-                }
-                int countObjects = (int)[allPhotosResult count];
-                int lastPage = ceil(countObjects/perPage);
-            
+                
                 int from = countObjects-((page-1)*perPage)-1;
                 int to = countObjects-(page*perPage);
                 if(to < 0) {
@@ -223,4 +207,3 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)props callback:(RCTResponseSenderBlo
 //}
 
 @end
-  
